@@ -79,6 +79,26 @@ body {
   padding: clamp(18px, 3vw, 30px);
 }
 
+.stage-media-frame {
+  margin: 0 0 18px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 14px 34px rgba(47, 36, 58, 0.12);
+}
+
+.stage-media {
+  display: block;
+  width: 100%;
+  max-height: min(52vh, 420px);
+  object-fit: cover;
+  object-position: center;
+}
+
+video.stage-media {
+  background: #120f14;
+}
+
 .stage {
   display: none;
   transform: translateY(14px);
@@ -309,6 +329,14 @@ p {
   .btn-secondary {
     margin-right: 0;
   }
+
+  .stage-media-frame {
+    margin-bottom: 16px;
+  }
+
+  .stage-media {
+    max-height: 320px;
+  }
 }
 
 @media (max-width: 420px) {
@@ -330,6 +358,10 @@ p {
 
   .intro-buttons {
     min-height: 0;
+  }
+
+  .stage-media {
+    max-height: 240px;
   }
 }
 

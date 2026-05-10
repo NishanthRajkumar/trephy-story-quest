@@ -1,4 +1,16 @@
 const appData = {
+  wrongAnswerMedia: [
+    {
+      type: "image",
+      src: "Images/wrong-answer-better-luck-nxt-time-img.jpg",
+      alt: "A playful better luck next time memory"
+    },
+    {
+      type: "image",
+      src: "Images/wrong-answer-sad-img.jpg",
+      alt: "A playful sad face after missing a reward"
+    }
+  ],
   introNoLabels: [
     "No",
     "Nope",
@@ -15,7 +27,12 @@ const appData = {
       answerIndex: 3,
       rewardTitle: "The first couple selfie",
       rewardText: "This awkward first private meet with cute goofy selfies is still me favourite.",
-      coupon: "Coupon: You pick the desert tonight"
+      coupon: "Coupon: You pick the desert tonight",
+      media: {
+        type: "image",
+        src: "Images/first-selfie-img.jpg",
+        alt: "Our first silly selfie together"
+      }
     },
     {
       prompt: "What was our first proper date vibe?",
@@ -23,7 +40,12 @@ const appData = {
       answerIndex: 2,
       rewardTitle: "First date vibe.",
       rewardText: "Good food, better conversation, best company.",
-      coupon: "Coupon: Redeem one long hug on demand, no expiration."
+      coupon: "Coupon: Redeem one long hug on demand, no expiration.",
+      media: {
+        type: "image",
+        src: "Images/first-date-vibe-img.jpg",
+        alt: "A memory from our first proper date vibe"
+      }
     },
     {
       prompt: "Where did we have our first lunch date?",
@@ -31,7 +53,12 @@ const appData = {
       answerIndex: 2,
       rewardTitle: "Memory unlocked: First lunch date",
       rewardText: "That lunch date is still one of my favorite memories with you.",
-      coupon: "Coupon: Redeem 10 kisses on demand, no expiration"
+      coupon: "Coupon: Redeem 10 kisses on demand, no expiration",
+      media: {
+        type: "video",
+        src: "Images/first-date-lunch-vid.mp4",
+        alt: "A video memory from our first lunch date"
+      }
     },
     {
       prompt: "What is my favorite thing about you?",
@@ -39,7 +66,12 @@ const appData = {
       answerIndex: 3,
       rewardTitle: "Memory unlocked: The obvious truth",
       rewardText: "It is impossible to choose just one thing.",
-      coupon: "Coupon: Pick your favourite cousine for dinner tonight"
+      coupon: "Coupon: Pick your favourite cousine for dinner tonight",
+      media: {
+        type: "image",
+        src: "Images/favourite-things-img.jpg",
+        alt: "Trephy and all my favourite things about her"
+      }
     }
   ]
 };
@@ -61,6 +93,10 @@ const revealBtn = document.getElementById("revealBtn");
 const rewardTitle = document.getElementById("rewardTitle");
 const rewardText = document.getElementById("rewardText");
 const rewardCoupon = document.getElementById("rewardCoupon");
+const rewardMediaFrame = document.getElementById("rewardMediaFrame");
+const rewardImage = document.getElementById("rewardImage");
+const rewardVideo = document.getElementById("rewardVideo");
+const rewardVideoSource = document.getElementById("rewardVideoSource");
 const finalPlan = document.getElementById("finalPlan");
 const finalNote = document.getElementById("finalNote");
 const earnedCouponList = document.getElementById("earnedCouponList");
@@ -75,6 +111,7 @@ const restartBtn = document.getElementById("restartBtn");
 const shareBtn = document.getElementById("shareBtn");
 
 const isCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
+const videoPosterCache = new Map();
 
 let noClickCount = 0;
 let currentQuestion = 0;
@@ -95,6 +132,105 @@ function showStage(target) {
     section.classList.remove("is-active");
   });
   target.classList.add("is-active");
+}
+
+function resetRewardMedia() {
+  rewardMediaFrame.hidden = true;
+  rewardImage.hidden = true;
+  rewardImage.removeAttribute("src");
+  rewardImage.alt = "";
+  rewardVideo.hidden = true;
+  rewardVideo.pause();
+  rewardVideo.removeAttribute("aria-label");
+  rewardVideoSource.src = "";
+  rewardVideo.load();
+}
+
+function renderRewardMedia(media) {
+  resetRewardMedia();
+
+  if (!media) {
+    return;
+  }
+
+  rewardMediaFrame.hidden = false;
+
+  if (media.type === "video") {
+    rewardVideoSource.src = media.src;
+    rewardVideo.setAttribute("aria-label", media.alt || "Unlocked video memory");
+    rewardVideo.hidden = false;
+    rewardVideo.load();
+    applyVideoPoster(rewardVideo, media.src);
+    return;
+  }
+
+  rewardImage.src = media.src;
+  rewardImage.alt = media.alt || "Unlocked memory";
+  rewardImage.hidden = false;
+}
+
+function pickWrongAnswerMedia() {
+  const index = Math.floor(Math.random() * appData.wrongAnswerMedia.length);
+  return appData.wrongAnswerMedia[index];
+}
+
+function generateVideoPoster(videoElement, src) {
+  if (videoPosterCache.has(src)) {
+    videoElement.poster = videoPosterCache.get(src);
+    return;
+  }
+
+  const captureVideo = document.createElement("video");
+  captureVideo.muted = true;
+  captureVideo.playsInline = true;
+  captureVideo.preload = "auto";
+  captureVideo.src = src;
+
+  const cleanup = () => {
+    captureVideo.pause();
+    captureVideo.removeAttribute("src");
+    captureVideo.load();
+  };
+
+  captureVideo.addEventListener(
+    "loadeddata",
+    () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = captureVideo.videoWidth;
+      canvas.height = captureVideo.videoHeight;
+
+      const context = canvas.getContext("2d");
+      if (!context) {
+        cleanup();
+        return;
+      }
+
+      context.drawImage(captureVideo, 0, 0, canvas.width, canvas.height);
+      const posterDataUrl = canvas.toDataURL("image/jpeg", 0.86);
+      videoPosterCache.set(src, posterDataUrl);
+      videoElement.poster = posterDataUrl;
+      cleanup();
+    },
+    { once: true }
+  );
+
+  captureVideo.addEventListener(
+    "error",
+    () => {
+      cleanup();
+    },
+    { once: true }
+  );
+}
+
+function applyVideoPoster(videoElement, src) {
+  if (videoPosterCache.has(src)) {
+    videoElement.poster = videoPosterCache.get(src);
+    return;
+  }
+
+  videoElement.removeAttribute("poster");
+  generateVideoPoster(videoElement, src);
 }
 
 function moveNoButton() {
@@ -147,6 +283,7 @@ function renderQuestion() {
   revealBtn.hidden = true;
   quizLocked = false;
   pendingReveal = null;
+  resetRewardMedia();
 }
 
 function renderCouponList(target, values, emptyText) {
@@ -204,7 +341,8 @@ function onOptionSelect(selectedIndex) {
     feedbackBox.textContent = `${wrongAttemptMessages[2]} Correct answer: ${correctAnswer}`;
     pendingReveal = {
       correctAnswer,
-      coupon: item.coupon
+      coupon: item.coupon,
+      media: pickWrongAnswerMedia()
     };
     quizLocked = true;
     revealBtn.hidden = false;
@@ -220,6 +358,7 @@ function onOptionSelect(selectedIndex) {
     rewardTitle.textContent = item.rewardTitle;
     rewardText.textContent = item.rewardText;
     rewardCoupon.textContent = item.coupon;
+    renderRewardMedia(item.media);
     progressLabel.textContent = `Checkpoint ${currentQuestion + 1} cleared`;
 
     nextBtn.textContent =
@@ -237,6 +376,7 @@ function showMissedReveal() {
   rewardTitle.textContent = `Checkpoint ${currentQuestion + 1}: reveal`;
   rewardText.textContent = `Correct answer was: ${pendingReveal.correctAnswer}. You missed this coupon this round.`;
   rewardCoupon.textContent = `Missed coupon: ${pendingReveal.coupon}`;
+  renderRewardMedia(pendingReveal.media);
   progressLabel.textContent = `Checkpoint ${currentQuestion + 1} revealed`;
 
   nextBtn.textContent =
@@ -278,6 +418,7 @@ function resetExperience() {
   noBtn.style.transform = "translate(0, 0)";
   noBtn.textContent = appData.introNoLabels[0];
   progressLabel.textContent = "A tiny adventure for my baby";
+  resetRewardMedia();
   showStage(stages.intro);
 }
 

@@ -32,6 +32,14 @@
       </header>
 
       <section class="card stage is-active" id="stageIntro" aria-live="polite">
+        <figure class="stage-media-frame">
+          <img
+            src="Images/intro-img.jpg"
+            alt="Trephy smiling before the story quest begins"
+            class="stage-media"
+            loading="eager"
+          />
+        </figure>
         <h1>Trephy, want to go on a tiny adventure with me tonight?</h1>
         <p class="subtitle">No pressure. Mild chaos included.</p>
 
@@ -44,6 +52,14 @@
       </section>
 
       <section class="card stage" id="stageBridge" aria-live="polite">
+        <figure class="stage-media-frame">
+          <img
+            src="Images/negotiation-successful-img.jpg"
+            alt="Negotiation successful memory"
+            class="stage-media"
+            loading="lazy"
+          />
+        </figure>
         <h2>Okay baby, deal accepted: maybe after ice cream.</h2>
         <p>
           Dessert clause approved after strong negotiation. Let us unlock a few memory checkpoints first.
@@ -68,6 +84,13 @@
       </section>
 
       <section class="card stage" id="stageReward" aria-live="polite">
+        <div class="stage-media-frame" id="rewardMediaFrame" hidden>
+          <img id="rewardImage" alt="Unlocked memory" class="stage-media" hidden />
+          <video id="rewardVideo" class="stage-media" controls playsinline preload="metadata" hidden>
+            <source id="rewardVideoSource" src="" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
         <h2 id="rewardTitle">Memory unlocked</h2>
         <p id="rewardText"></p>
         <div class="coupon" id="rewardCoupon"></div>
@@ -75,6 +98,14 @@
       </section>
 
       <section class="card stage" id="stageFinal" aria-live="polite">
+        <figure class="stage-media-frame">
+          <img
+            src="Images/final-img.jpg"
+            alt="Final memory of Trephy and us together"
+            class="stage-media"
+            loading="lazy"
+          />
+        </figure>
         <h2>Quest complete.</h2>
         <p>
           You unlocked tonight's surprise: <strong id="finalPlan">Ice cream + stargazing drive</strong>.
