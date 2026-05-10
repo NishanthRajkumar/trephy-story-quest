@@ -18,7 +18,8 @@ const appData = {
     "Fine, but I am judging",
     "Maybe after ice cream"
   ],
-  finalPlan: "Ice cream + stargazing drive",
+  negotiatedDeal: "Negotiated deal unlocked: maybe after ice cream.",
+  finalPlan: "Lovely dinner date",
   finalNote: "Trephy baby, thank you for being my favorite part of every ordinary day.",
   checkpoints: [
     {
@@ -98,6 +99,7 @@ const rewardImage = document.getElementById("rewardImage");
 const rewardVideo = document.getElementById("rewardVideo");
 const rewardVideoSource = document.getElementById("rewardVideoSource");
 const finalPlan = document.getElementById("finalPlan");
+const finalDeal = document.getElementById("finalDeal");
 const finalNote = document.getElementById("finalNote");
 const earnedCouponList = document.getElementById("earnedCouponList");
 const lostCouponList = document.getElementById("lostCouponList");
@@ -120,6 +122,7 @@ let earnedCoupons = [];
 let lostCoupons = [];
 let quizLocked = false;
 let pendingReveal = null;
+let userNegotiated = false;
 
 const wrongAttemptMessages = [
   "Nooope 😄 Almost there, baby. Try one more time.",
@@ -256,6 +259,7 @@ function moveNoButton() {
 
   if (!shouldDodge) {
     noBtn.style.transform = "translate(0, 0)";
+    userNegotiated = true;
     progressLabel.textContent = "Negotiation successful";
     showStage(stages.bridge);
   }
@@ -390,6 +394,8 @@ function showMissedReveal() {
 function goToNextStep() {
   if (currentQuestion === appData.checkpoints.length - 1) {
     finalPlan.textContent = appData.finalPlan;
+    finalDeal.hidden = !userNegotiated;
+    finalDeal.textContent = userNegotiated ? appData.negotiatedDeal : "";
     finalNote.textContent = appData.finalNote;
     showFinalCouponSummary();
     progressLabel.textContent = "Quest complete";
@@ -414,6 +420,7 @@ function startQuest() {
 }
 
 function resetExperience() {
+  userNegotiated = false;
   noClickCount = 0;
   currentQuestion = 0;
   noBtn.style.transform = "translate(0, 0)";
@@ -452,6 +459,7 @@ function shareOnWhatsApp() {
 noBtn.addEventListener("click", moveNoButton);
 
 yesBtn.addEventListener("click", () => {
+  userNegotiated = false;
   progressLabel.textContent = "Yay, starting our quest";
   startQuest();
 });
