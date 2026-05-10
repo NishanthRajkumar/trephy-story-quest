@@ -1,0 +1,354 @@
+:root {
+  --bg-cream: #fff7ea;
+  --bg-warm: #ffd7b3;
+  --ink-main: #2f243a;
+  --ink-soft: #6d5b79;
+  --peach: #ff9f7a;
+  --orange: #ff6f4a;
+  --teal: #2e7d78;
+  --card: rgba(255, 253, 248, 0.88);
+  --card-border: rgba(255, 255, 255, 0.65);
+  --shadow: 0 24px 50px rgba(47, 36, 58, 0.16);
+  --radius: 24px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Outfit", "Segoe UI", sans-serif;
+  color: var(--ink-main);
+  background:
+    radial-gradient(circle at 15% 15%, #ffe6cf 0%, transparent 35%),
+    radial-gradient(circle at 85% 10%, #ffd0c0 0%, transparent 30%),
+    linear-gradient(140deg, var(--bg-cream), var(--bg-warm) 55%, #ffc4a5 100%);
+  display: grid;
+  place-items: center;
+  overflow-x: hidden;
+  padding: clamp(12px, 2.6vw, 24px);
+}
+
+.background-glow {
+  position: fixed;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  filter: blur(35px);
+  opacity: 0.35;
+  z-index: 0;
+  animation: drift 14s ease-in-out infinite alternate;
+}
+
+.glow-one {
+  background: #ff8c61;
+  top: -90px;
+  right: -100px;
+}
+
+.glow-two {
+  background: #56b3ad;
+  bottom: -110px;
+  left: -120px;
+  animation-delay: 1.2s;
+}
+
+.app-shell {
+  width: min(780px, 100%);
+  position: relative;
+  z-index: 1;
+}
+
+.top-note {
+  text-align: center;
+  margin-bottom: 12px;
+  color: var(--ink-soft);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(8px);
+  padding: clamp(18px, 3vw, 30px);
+}
+
+.stage {
+  display: none;
+  transform: translateY(14px);
+  opacity: 0;
+}
+
+.stage.is-active {
+  display: block;
+  animation: fadeInUp 550ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+h1,
+h2 {
+  font-family: "DM Serif Display", Georgia, serif;
+  margin: 0 0 10px;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+}
+
+h2 {
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
+}
+
+p {
+  margin: 0 0 14px;
+  line-height: 1.6;
+}
+
+.subtitle {
+  color: var(--ink-soft);
+}
+
+.intro-buttons {
+  min-height: 130px;
+  position: relative;
+  margin: 18px 0 8px;
+}
+
+.btn {
+  border: 0;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 12px 22px;
+  min-height: 44px;
+  cursor: pointer;
+  transition: transform 160ms ease, filter 160ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn:hover {
+  transform: translateY(-2px) scale(1.01);
+  filter: saturate(1.06);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-primary {
+  color: #fff;
+  background: linear-gradient(125deg, var(--orange), var(--peach));
+  box-shadow: 0 10px 24px rgba(255, 111, 74, 0.28);
+}
+
+.btn-secondary {
+  color: #fff;
+  background: linear-gradient(125deg, #25d366, #128c7e);
+  box-shadow: 0 10px 24px rgba(18, 140, 126, 0.25);
+  margin-right: 10px;
+}
+
+.btn-ghost {
+  color: var(--ink-main);
+  background: #fff;
+  border: 1px solid rgba(47, 36, 58, 0.15);
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.tiny-hint {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+.quiz-head {
+  margin-bottom: 8px;
+}
+
+.pill {
+  display: inline-block;
+  border-radius: 999px;
+  background: rgba(46, 125, 120, 0.12);
+  color: var(--teal);
+  font-weight: 600;
+  font-size: 0.86rem;
+  padding: 7px 13px;
+}
+
+.option-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.option {
+  text-align: left;
+  border-radius: 16px;
+  border: 1px solid rgba(47, 36, 58, 0.16);
+  background: #fff;
+  color: var(--ink-main);
+  padding: 12px;
+  min-height: 48px;
+  font: inherit;
+  cursor: pointer;
+  transition: border-color 140ms ease, transform 140ms ease, box-shadow 140ms ease;
+}
+
+.option:hover {
+  border-color: rgba(255, 111, 74, 0.5);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(47, 36, 58, 0.09);
+}
+
+.feedback {
+  margin-top: 14px;
+  border-radius: 14px;
+  padding: 10px 12px;
+  font-weight: 500;
+}
+
+.feedback.error {
+  background: rgba(255, 111, 74, 0.14);
+  color: #9d2c12;
+}
+
+.feedback.ok {
+  background: rgba(46, 125, 120, 0.14);
+  color: #1f5a57;
+}
+
+.coupon {
+  margin: 12px 0 18px;
+  border: 2px dashed rgba(46, 125, 120, 0.45);
+  border-radius: 16px;
+  padding: 14px;
+  background: rgba(86, 179, 173, 0.08);
+  font-weight: 600;
+}
+
+.final-note {
+  color: var(--ink-soft);
+}
+
+.final-coupons {
+  margin: 16px 0 18px;
+}
+
+.final-coupons h3 {
+  margin: 10px 0 6px;
+  font-family: "Outfit", "Segoe UI", sans-serif;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+}
+
+.coupon-list {
+  margin: 0 0 8px;
+  padding-left: 20px;
+}
+
+.coupon-list li {
+  margin: 3px 0;
+}
+
+.final-coupon-message {
+  margin-top: 10px;
+  border-radius: 14px;
+  padding: 10px 12px;
+  background: rgba(255, 111, 74, 0.14);
+  color: #9d2c12;
+  font-weight: 500;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes drift {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(-18px, 20px) scale(1.08);
+  }
+}
+
+@media (max-width: 680px) {
+  .option-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .intro-buttons {
+    min-height: 150px;
+  }
+
+  .btn {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .btn-ghost {
+    position: static;
+  }
+
+  .btn-secondary {
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 420px) {
+  h1 {
+    font-size: clamp(1.45rem, 7vw, 1.8rem);
+  }
+
+  h2 {
+    font-size: clamp(1.2rem, 6vw, 1.5rem);
+  }
+
+  .top-note {
+    font-size: 0.72rem;
+  }
+
+  .tiny-hint {
+    font-size: 0.82rem;
+  }
+
+  .intro-buttons {
+    min-height: 0;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .btn:hover,
+  .option:hover {
+    transform: none;
+    filter: none;
+    box-shadow: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Our Story Quest</title>
+    <meta name="description" content="A tiny romantic memory quest with playful checkpoints, surprise coupons, and a cute final reward." />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Our Story Quest" />
+    <meta property="og:description" content="A tiny romantic memory quest with playful checkpoints, surprise coupons, and a cute final reward." />
+    <meta property="og:url" content="https://your-username.github.io/your-repo/" />
+    <meta property="og:image" content="https://your-username.github.io/your-repo/preview.png" />
+    <meta property="og:image:alt" content="Our Story Quest preview" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Our Story Quest" />
+    <meta name="twitter:description" content="A tiny romantic memory quest with playful checkpoints, surprise coupons, and a cute final reward." />
+    <meta name="twitter:image" content="https://your-username.github.io/your-repo/preview.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="background-glow glow-one" aria-hidden="true"></div>
+    <div class="background-glow glow-two" aria-hidden="true"></div>
+    <main class="app-shell">
+      <header class="top-note">
+        <p id="progressLabel">A tiny adventure for my baby</p>
+      </header>
+
+      <section class="card stage is-active" id="stageIntro" aria-live="polite">
+        <h1>Trephy, want to go on a tiny adventure with me tonight?</h1>
+        <p class="subtitle">No pressure. Mild chaos included.</p>
+
+        <div class="intro-buttons">
+          <button class="btn btn-primary" id="yesBtn" type="button">Yes</button>
+          <button class="btn btn-ghost" id="noBtn" type="button">No</button>
+        </div>
+
+        <p class="tiny-hint">Tip: try both buttons for maximum drama.</p>
+      </section>
+
+      <section class="card stage" id="stageBridge" aria-live="polite">
+        <h2>Okay baby, deal accepted: maybe after ice cream.</h2>
+        <p>
+          Dessert clause approved after strong negotiation. Let us unlock a few memory checkpoints first.
+        </p>
+        <button class="btn btn-primary" id="startQuestBtn" type="button">
+          Start Our Story Quest
+        </button>
+      </section>
+
+      <section class="card stage" id="stageQuiz" aria-live="polite">
+        <div class="quiz-head">
+          <span class="pill" id="questionCounter">Checkpoint 1 of 4</span>
+        </div>
+
+        <h2 id="questionPrompt">Question appears here</h2>
+        <div class="option-grid" id="optionGrid"></div>
+
+        <div class="feedback" id="feedbackBox" hidden></div>
+        <button class="btn btn-primary" id="revealBtn" type="button" hidden>
+          Show answer and continue
+        </button>
+      </section>
+
+      <section class="card stage" id="stageReward" aria-live="polite">
+        <h2 id="rewardTitle">Memory unlocked</h2>
+        <p id="rewardText"></p>
+        <div class="coupon" id="rewardCoupon"></div>
+        <button class="btn btn-primary" id="nextBtn" type="button">Next checkpoint</button>
+      </section>
+
+      <section class="card stage" id="stageFinal" aria-live="polite">
+        <h2>Quest complete.</h2>
+        <p>
+          You unlocked tonight's surprise: <strong id="finalPlan">Ice cream + stargazing drive</strong>.
+        </p>
+        <p class="final-note" id="finalNote">
+          Trephy baby, thank you for being my favorite part of every ordinary day.
+        </p>
+        <div class="final-coupons">
+          <h3>Coupons earned</h3>
+          <ul id="earnedCouponList" class="coupon-list"></ul>
+
+          <h3>Coupons missed</h3>
+          <ul id="lostCouponList" class="coupon-list"></ul>
+
+          <p id="finalCouponMessage" class="final-coupon-message"></p>
+        </div>
+        <button class="btn btn-secondary" id="shareBtn" type="button" aria-label="Share this quest on WhatsApp">
+          Share on WhatsApp
+        </button>
+        <button class="btn btn-primary" id="restartBtn" type="button">Play Again</button>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
