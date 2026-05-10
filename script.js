@@ -142,6 +142,7 @@ function resetRewardMedia() {
   rewardVideo.hidden = true;
   rewardVideo.pause();
   rewardVideo.removeAttribute("aria-label");
+  rewardVideo.removeAttribute("poster");
   rewardVideoSource.src = "";
   rewardVideo.load();
 }

@@ -14,7 +14,8 @@ A playful romantic mini web app with memory checkpoints, rewards, and a final su
 
 - `index.html` - app markup and meta tags
 - `styles.css` - styling, responsive breakpoints, touch and motion preferences
-- `script.js` - app flow, quiz logic, and WhatsApp sharing
+- `script.js` - app flow, quiz logic, WhatsApp sharing, and video poster generation
+- `Images/` - photos and video used across each stage and reward
 
 ## Run Locally
 
@@ -29,39 +30,39 @@ python -m http.server 5500
 
 Then open `http://localhost:5500`.
 
+> Do not open `index.html` directly via `file://`. The video poster generation uses canvas and is blocked by the browser on the `file://` protocol.
+
 ## Customize Before Sharing
 
-Update these meta tag placeholders in `index.html`:
+The `og:url` and `og:image` in `index.html` are already set to:
 
-- `og:url`
-- `og:image`
+- Site: `https://nishanthrajkumar.github.io/trephy-story-quest/`
+- Preview image: `https://raw.githubusercontent.com/NishanthRajkumar/trephy-story-quest/main/Images/preview-img.png`
 
-Use your final GitHub Pages URL and a public image URL.
+Make sure `Images/preview-img.png` is pushed to GitHub for the WhatsApp link preview to work.
 
 ## Deploy to GitHub Pages
 
-1. Create a new GitHub repository (example: `our-story-quest`).
-2. Push this project:
+The repo is already set up at `https://github.com/NishanthRajkumar/trephy-story-quest`.
+
+To push changes:
 
 ```powershell
-git init
 git add .
-git commit -m "Initial commit"
-git branch -M main
-git remote add origin https://github.com/<your-username>/<your-repo>.git
-git push -u origin main
+git commit -m "Your message"
+git push
 ```
 
-3. On GitHub, go to **Settings -> Pages**.
-4. Under **Build and deployment**:
+To enable Pages (one-time setup):
+
+1. Go to **Settings → Pages** in the repo.
+2. Under **Build and deployment**:
    - Source: **Deploy from a branch**
    - Branch: **main**
    - Folder: **/ (root)**
-5. Save and wait for deployment.
+3. Save and wait ~1 minute.
 
-Your site URL will be:
-
-`https://<your-username>.github.io/<your-repo>/`
+Live site: `https://nishanthrajkumar.github.io/trephy-story-quest/`
 
 ## WhatsApp Sharing
 
@@ -69,7 +70,7 @@ The app includes a "Share on WhatsApp" button on the final screen.
 
 You can also share manually with:
 
-`https://wa.me/?text=Try%20our%20tiny%20adventure%20https%3A%2F%2F<your-username>.github.io%2F<your-repo>%2F`
+`https://wa.me/?text=Try%20our%20tiny%20adventure%20https%3A%2F%2Fnishanthrajkumar.github.io%2Ftrephy-story-quest%2F`
 
 ## Notes
 
