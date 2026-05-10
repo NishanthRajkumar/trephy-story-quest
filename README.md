@@ -35,7 +35,6 @@ Update these meta tag placeholders in `index.html`:
 
 - `og:url`
 - `og:image`
-- `twitter:image`
 
 Use your final GitHub Pages URL and a public image URL.
 
