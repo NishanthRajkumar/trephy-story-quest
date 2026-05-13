@@ -113,9 +113,38 @@ const soundToggle = document.getElementById("soundToggle");
 const quizMeta = document.getElementById("quizMeta");
 const streakCountEl = document.getElementById("streakCount");
 const timerDisplay = document.getElementById("timerDisplay");
+const srAnnounce = document.getElementById("srAnnounce");
 
 const isCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
 const videoPosterCache = new Map();
+
+const POSTER_STORAGE_PREFIX = "storyquest:poster:";
+
+function getStoredPoster(src) {
+  try {
+    return window.localStorage.getItem(POSTER_STORAGE_PREFIX + src);
+  } catch {
+    return null;
+  }
+}
+
+function savePosterToStorage(src, dataUrl) {
+  try {
+    window.localStorage.setItem(POSTER_STORAGE_PREFIX + src, dataUrl);
+  } catch {
+    // Storage quota exceeded; in-memory cache still works
+  }
+}
+
+function announce(text) {
+  if (!srAnnounce) {
+    return;
+  }
+  srAnnounce.textContent = "";
+  window.setTimeout(() => {
+    srAnnounce.textContent = text;
+  }, 50);
+}
 
 let noClickCount = 0;
 let currentQuestion = 0;
@@ -268,6 +297,14 @@ function showStage(target) {
   });
   target.classList.add("is-active");
 
+  window.setTimeout(() => {
+    const focusTarget = target.querySelector("h1, h2") || target;
+    if (!focusTarget.hasAttribute("tabindex")) {
+      focusTarget.setAttribute("tabindex", "-1");
+    }
+    focusTarget.focus({ preventScroll: false });
+  }, 50);
+
   if (quizMeta) {
     quizMeta.hidden = target !== stages.quiz;
   }
@@ -352,6 +389,7 @@ function generateVideoPoster(videoElement, src) {
       context.drawImage(captureVideo, 0, 0, canvas.width, canvas.height);
       const posterDataUrl = canvas.toDataURL("image/jpeg", 0.86);
       videoPosterCache.set(src, posterDataUrl);
+      savePosterToStorage(src, posterDataUrl);
       videoElement.poster = posterDataUrl;
       cleanup();
     },
@@ -370,6 +408,13 @@ function generateVideoPoster(videoElement, src) {
 function applyVideoPoster(videoElement, src) {
   if (videoPosterCache.has(src)) {
     videoElement.poster = videoPosterCache.get(src);
+    return;
+  }
+
+  const stored = getStoredPoster(src);
+  if (stored) {
+    videoPosterCache.set(src, stored);
+    videoElement.poster = stored;
     return;
   }
 
@@ -444,12 +489,19 @@ function startQuestionTimer() {
     timerSecondsLeft -= 1;
     updateTimerDisplay();
 
+    if (timerSecondsLeft === 10) {
+      announce("10 seconds remaining");
+    } else if (timerSecondsLeft === 5) {
+      announce("5 seconds remaining, hurry!");
+    }
+
     if (timerSecondsLeft <= 5 && timerSecondsLeft > 0) {
       audioSystem.play("countdown");
     }
 
     if (timerSecondsLeft <= 0) {
       stopQuestionTimer();
+      announce("Time is up!");
       handleQuestionTimeout();
     }
   }, 1000);
@@ -660,9 +712,9 @@ function onOptionSelect(selectedIndex) {
   feedbackBox.textContent = "Correct. Unlocking memory...";
 
   window.setTimeout(() => {
-    rewardTitle.textContent = item.rewardTitle;
-    rewardText.textContent = item.rewardText;
-    rewardCoupon.textContent = item.coupon;
+    if (rewardTitle) rewardTitle.textContent = item.rewardTitle;
+    if (rewardText) rewardText.textContent = item.rewardText;
+    if (rewardCoupon) rewardCoupon.textContent = item.coupon;
     renderRewardMedia(item.media);
     progressLabel.textContent = `Checkpoint ${currentQuestion + 1} cleared`;
 
@@ -678,9 +730,9 @@ function showMissedReveal() {
     return;
   }
 
-  rewardTitle.textContent = `Checkpoint ${currentQuestion + 1}: reveal`;
-  rewardText.textContent = `Correct answer was: ${pendingReveal.correctAnswer}. You missed this coupon this round.`;
-  rewardCoupon.textContent = `Missed coupon: ${pendingReveal.coupon}`;
+  if (rewardTitle) rewardTitle.textContent = `Checkpoint ${currentQuestion + 1}: reveal`;
+  if (rewardText) rewardText.textContent = `Correct answer was: ${pendingReveal.correctAnswer}. You missed this coupon this round.`;
+  if (rewardCoupon) rewardCoupon.textContent = `Missed coupon: ${pendingReveal.coupon}`;
   renderRewardMedia(pendingReveal.media);
   progressLabel.textContent = `Checkpoint ${currentQuestion + 1} revealed`;
 
@@ -693,10 +745,12 @@ function showMissedReveal() {
 
 function goToNextStep() {
   if (currentQuestion === appData.checkpoints.length - 1) {
-    finalPlan.textContent = appData.finalPlan;
-    finalDeal.hidden = !userNegotiated;
-    finalDeal.textContent = userNegotiated ? appData.negotiatedDeal : "";
-    finalNote.textContent = `${appData.finalNote} 🔥 Max streak: ${maxStreak}`;
+    if (finalPlan) finalPlan.textContent = appData.finalPlan;
+    if (finalDeal) {
+      finalDeal.hidden = !userNegotiated;
+      finalDeal.textContent = userNegotiated ? appData.negotiatedDeal : "";
+    }
+    if (finalNote) finalNote.textContent = `${appData.finalNote} 🔥 Max streak: ${maxStreak}`;
     showFinalCouponSummary();
     progressLabel.textContent = "Quest complete";
     showStage(stages.final);
@@ -746,25 +800,22 @@ function buildShareText() {
   return `${message} ${window.location.href}`;
 }
 
+function openInNewTab(url) {
+  window.open(url, "_blank", "noopener,noreferrer");
+}
+
 function shareOnWhatsApp() {
   const shareText = buildShareText();
+  const waUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
 
   if (navigator.share) {
     navigator
-      .share({
-        title: "Our Story Quest",
-        text: shareText,
-        url: window.location.href
-      })
-      .catch(() => {
-        const waUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
-        window.open(waUrl, "_blank", "noopener,noreferrer");
-      });
+      .share({ title: "Our Story Quest", text: shareText, url: window.location.href })
+      .catch(() => openInNewTab(waUrl));
     return;
   }
 
-  const waUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
-  window.open(waUrl, "_blank", "noopener,noreferrer");
+  openInNewTab(waUrl);
 }
 
 function applyDarkModePreference() {
@@ -835,6 +886,10 @@ document.addEventListener(
   },
   { once: true }
 );
+
+if (!window.localStorage.getItem("anniversaryDate")) {
+  window.localStorage.setItem("anniversaryDate", "2025-02-15");
+}
 
 confetti.init();
 applyDarkModePreference();
