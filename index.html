@@ -28,7 +28,15 @@
     <div class="background-glow glow-two" aria-hidden="true"></div>
     <main class="app-shell">
       <header class="top-note">
+        <div class="top-controls">
+          <button class="top-btn" id="darkModeToggle" type="button">🌙 Dark Mode</button>
+          <button class="top-btn" id="soundToggle" type="button">🔊 Sound On</button>
+        </div>
         <p id="progressLabel">A tiny adventure for my baby</p>
+        <div class="quiz-meta" id="quizMeta">
+          <span class="streak-display" id="streakDisplay">🔥 <span id="streakCount">0</span></span>
+          <span class="timer-display" id="timerDisplay"></span>
+        </div>
       </header>
 
       <section class="card stage is-active" id="stageIntro" aria-live="polite">
@@ -126,7 +134,12 @@
         <button class="btn btn-secondary" id="shareBtn" type="button" aria-label="Share this quest on WhatsApp">
           Share on WhatsApp
         </button>
+        <button class="btn btn-secondary" id="confettiBtn" type="button" aria-label="Trigger confetti">
+          🎉 Confetti
+        </button>
         <button class="btn btn-primary" id="restartBtn" type="button">Play Again</button>
+        <div id="shareImageContainer" class="share-image-container"></div>
+        <div id="anniversaryInfo" class="anniversary-info"></div>
       </section>
     </main>
 
